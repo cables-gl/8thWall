@@ -1,0 +1,12 @@
+{
+  "name": "8thwall-cables-test",
+  "version": "0.0.1",
+  "private": true,
+  "homepage": ".",
+  "dependencies": {
+    "@cables/cables": "0.3.2"
+  },
+  "scripts": {
+    "patchup": "cables -c -i -d '.' -e cmXoMS"
+  }
+}

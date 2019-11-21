@@ -71,8 +71,25 @@ const customPipelineModule = () => {
   }
 }
 
+const imageTargetPipelineModule = () => {
 
+  function showTarget(target) {
+    CABLES.patch.setVariable("current_image", target.detail.metadata);
+  }
 
+  function hideTarget(detail) {
+    CABLES.patch.setVariable("current_image", {id: ""});
+  }
+
+  return {
+    name: 'testproject-target',
+    listeners: [
+      {event: 'reality.imagefound', process: showTarget},
+      {event: 'reality.imageupdated', process: showTarget},
+      {event: 'reality.imagelost', process: hideTarget},
+    ],
+  }
+};
 
 const onxrloaded = () => {
 
@@ -89,13 +106,23 @@ const onxrloaded = () => {
     XRExtras.RuntimeError.pipelineModule(),      // Shows an error image on runtime error.
     // Custom pipeline modules.
     // nextbuttonPipelineModule(),             // Cycles through shaders and keeps UI up to date.
-  ])
+    imageTargetPipelineModule()
+  ]);
 
   // Request camera permissions and run the camera.
   XR.run({canvas: document.getElementById('camerafeed')})
-}
+};
 
 
 // Show loading screen before the full XR library has been loaded.
-const load = () => { XRExtras.Loading.showLoading({onxrloaded}) }
-window.onload = () => { window.XRExtras ? load() : window.addEventListener('xrextrasloaded', load) }
+const load = () => { XRExtras.Loading.showLoading({onxrloaded}) };
+window.onload = () => {
+  alert("start");
+  window.XRExtras ? load() : window.addEventListener('xrextrasloaded', load);
+  window.addEventListener('xrimagefound', showImage);
+  window.addEventListener('xrimageupdated', showImage)
+  window.addEventListener('xrimagelost', hideImage)
+};
+
+
+
