@@ -117,7 +117,6 @@ const onxrloaded = () => {
 // Show loading screen before the full XR library has been loaded.
 const load = () => { XRExtras.Loading.showLoading({onxrloaded}) };
 window.onload = () => {
-  alert("start");
   window.XRExtras ? load() : window.addEventListener('xrextrasloaded', load);
   window.addEventListener('xrimagefound', showImage);
   window.addEventListener('xrimageupdated', showImage)
