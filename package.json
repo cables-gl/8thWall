@@ -4,9 +4,9 @@
   "private": true,
   "homepage": ".",
   "dependencies": {
-    "@cables/cables": "0.3.2"
+    "@cables/cables": "0.5.3"
   },
   "scripts": {
-    "patchup": "cables -c -i -d '.' -e cmXoMS"
+    "patchup": "cables -c -i -D -d '.' -e cmXoMS"
   }
 }
