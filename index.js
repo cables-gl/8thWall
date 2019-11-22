@@ -1,56 +1,50 @@
-
 const customPipelineModule = () => {
 
   return {
     name: 'customwhatever',
-    onStart: ({canvas, canvasWidth, canvasHeight, GLctx}) => {
-      console.log("start custom...");
+    onStart: ({ canvas, canvasWidth, canvasHeight, GLctx }) => {
+      console.log('start custom...');
     },
-    onUpdate: ({processCpuResult}) => {
-      
-      if (!processCpuResult.reality)
-      {
+    onUpdate: ({ processCpuResult }) => {
+
+      if (!processCpuResult.reality) {
         // console.log("no reality");
-        return
+        return;
       }
 
       // console.log(processCpuResult.reality);
-      const {rotation, position, intrinsics} = processCpuResult.reality
-    
-      if(intrinsics) CABLES.patch.setVariable("projm",intrinsics);
+      const { rotation, position, intrinsics } = processCpuResult.reality;
 
-      if(position && rotation)
-      {
-        const vmat=mat4.create();
+      if (intrinsics) CABLES.patch.setVariable('projm', intrinsics);
 
-        var mul=3.0;
-        var qinv=quat.create();
-        var q=quat.create();
-        var pos=vec3.create();
-        var posi=vec3.create();
+      if (position && rotation) {
+        const vmat = mat4.create();
 
-        vec3.set(pos,position.x*mul,position.y*mul,position.z*mul);
-        vec3.set(posi,0-position.x*mul,0-position.y*mul,0-position.z*mul);
+        var mul = 3.0;
+        var qinv = quat.create();
+        var q = quat.create();
+        var pos = vec3.create();
+        var posi = vec3.create();
+
+        vec3.set(pos, position.x * mul, position.y * mul, position.z * mul);
+        vec3.set(posi, 0 - position.x * mul, 0 - position.y * mul, 0 - position.z * mul);
 
 
-        quat.set(q,rotation.x, rotation.y, rotation.z, rotation.w);
+        quat.set(q, rotation.x, rotation.y, rotation.z, rotation.w);
         quat.invert(qinv, q);
 
-        var mq=mat4.create();
-        mat4.fromQuat(mq,qinv);
+        var mq = mat4.create();
+        mat4.fromQuat(mq, qinv);
 
-        mat4.translate(vmat,vmat, posi);
-        mat4.mul(vmat, mq,vmat);
+        mat4.translate(vmat, vmat, posi);
+        mat4.mul(vmat, mq, vmat);
 
-
-        CABLES.patch.setVariable("text","test4");
-
-        CABLES.patch.setVariable("vmatrix",vmat);
+        CABLES.patch.setVariable('vmatrix', vmat);
       }
 
 
     },
-    onCanvasSizeChange: ({canvasWidth, canvasHeight}) => {
+    onCanvasSizeChange: ({ canvasWidth, canvasHeight }) => {
       // const {renderer} = scene3
       // renderer.setSize(canvasWidth, canvasHeight)
     },
@@ -67,39 +61,39 @@ const customPipelineModule = () => {
     // }
     xrScene: () => {
       // return scene3
-    },
-  }
-}
+    }
+  };
+};
 
 const imageTargetPipelineModule = () => {
 
   function showTarget(target) {
-    CABLES.patch.setVariable("current_image", target.detail.metadata);
+    CABLES.patch.setVariable('current_image', target.detail);
   }
 
   function hideTarget(detail) {
-    CABLES.patch.setVariable("current_image", {id: ""});
+    CABLES.patch.setVariable('current_image', {});
   }
 
   return {
     name: 'testproject-target',
     listeners: [
-      {event: 'reality.imagefound', process: showTarget},
-      {event: 'reality.imageupdated', process: showTarget},
-      {event: 'reality.imagelost', process: hideTarget},
-    ],
-  }
+      { event: 'reality.imagefound', process: showTarget },
+      { event: 'reality.imageupdated', process: showTarget },
+      { event: 'reality.imagelost', process: hideTarget }
+    ]
+  };
 };
 
 const onxrloaded = () => {
 
   const myModule = customPipelineModule();
-  
-  XR.addCameraPipelineModules([  // Add camera pipeline modules.
+
+  XR8.addCameraPipelineModules([  // Add camera pipeline modules.
     // Existing pipeline modules.
-    XR.GlTextureRenderer.pipelineModule(),       // Draws the camera feed.
+    XR8.GlTextureRenderer.pipelineModule(),       // Draws the camera feed.
     myModule,
-    XR.XrController.pipelineModule(),            // Enables SLAM tracking.
+    XR8.XrController.pipelineModule(),            // Enables SLAM tracking.
     XRExtras.AlmostThere.pipelineModule(),       // Detects unsupported browsers and gives hints.
     XRExtras.FullWindowCanvas.pipelineModule(),  // Modifies the canvas to fill the window.
     XRExtras.Loading.pipelineModule(),           // Manages the loading screen on startup.
@@ -110,17 +104,16 @@ const onxrloaded = () => {
   ]);
 
   // Request camera permissions and run the camera.
-  XR.run({canvas: document.getElementById('camerafeed')})
+  XR8.run({ canvas: document.getElementById('camerafeed') });
 };
 
 
 // Show loading screen before the full XR library has been loaded.
-const load = () => { XRExtras.Loading.showLoading({onxrloaded}) };
+const load = () => {
+  XRExtras.Loading.showLoading({ onxrloaded });
+};
 window.onload = () => {
   window.XRExtras ? load() : window.addEventListener('xrextrasloaded', load);
-  window.addEventListener('xrimagefound', showImage);
-  window.addEventListener('xrimageupdated', showImage)
-  window.addEventListener('xrimagelost', hideImage)
 };
 
 
