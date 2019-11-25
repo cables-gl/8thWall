@@ -1,3 +1,5 @@
+const recognizedTargets = {};
+
 const customPipelineModule = () => {
 
   return {
@@ -68,10 +70,36 @@ const customPipelineModule = () => {
 const imageTargetPipelineModule = () => {
 
   function showTarget(target) {
+    if(recognizedTargets.hasOwnProperty(target.name)) {
+      recognizedTargets[target.detail.name].visible = true;
+    }else{
+      target.detail.visible = true;
+      recognizedTargets[target.detail.name] = target.detail;
+    }
+    const keys = Object.keys(recognizedTargets);
+    const targets = [];
+    for(let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      targets.push(recognizedTargets[key]);
+    }
+    CABLES.patch.setVariable('all_images', targets);
     CABLES.patch.setVariable('current_image', target.detail);
   }
 
-  function hideTarget(detail) {
+  function hideTarget(target) {
+    if(recognizedTargets.hasOwnProperty(target.name)) {
+      recognizedTargets[target.detail.name].visible = false;
+    }else{
+      target.detail.visible = false;
+      recognizedTargets[target.detail.name] = target.detail;
+    }
+    const keys = Object.keys(recognizedTargets);
+    const targets = [];
+    for(let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      targets.push(recognizedTargets[key]);
+    }
+    CABLES.patch.setVariable('all_images', targets);
     CABLES.patch.setVariable('current_image', {});
   }
 
