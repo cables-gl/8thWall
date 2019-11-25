@@ -89,6 +89,20 @@ const onxrloaded = () => {
 
   const myModule = customPipelineModule();
 
+  const targets = [
+    'IMG_20191125_094404384',
+    'IMG_20191125_094404384-1',
+    'Texture1_Tracking',
+    'erich',
+    'evoke',
+    '015_Südstadtkunst3_Kölors-e1509014272357',
+    '39958946_2084701515180778_8060234493859075130_n',
+    'Skelett-Der-kölsche-Liebhaber-e1508945670562',
+    'bf7tS',
+    'IMG_20191125_094411850'
+  ];
+  XR8.XrController.configure({disableWorldTracking: true, imageTargets: targets});
+
   XR8.addCameraPipelineModules([  // Add camera pipeline modules.
     // Existing pipeline modules.
     XR8.GlTextureRenderer.pipelineModule(),       // Draws the camera feed.
