@@ -7,6 +7,6 @@
     "@cables/cables": "0.5.3"
   },
   "scripts": {
-    "patchup": "cables -c -i -D -d '.' -e cmXoMS"
+    "patchup": "cables -c -i -D -d '.' -e 5ddbd9b94dcb753173107183"
   }
 }
